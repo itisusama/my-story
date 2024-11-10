@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [bookName, setBookName] = useState('');
   const [message, setMessage] = useState('');
   const [books, setBooks] = useState([]);
+  const router = useRouter(); // Initialize the router
 
-  // Fetch books from books.json when the component mounts
   useEffect(() => {
     const fetchBooks = async () => {
       const response = await fetch('/api/getBooks');
@@ -31,11 +32,7 @@ export default function Home() {
       if (data.success) {
         setMessage(`Book "${bookName}" created with ID: ${data.id}`);
         setBookName('');
-
-        // Add the new book to the books list
         setBooks((prevBooks) => [...prevBooks, { id: data.id, name: bookName }]);
-        
-        // Clear the message after 20 seconds
         setTimeout(() => setMessage(''), 20000);
       } else {
         setMessage('Error creating book.');
@@ -69,7 +66,7 @@ export default function Home() {
           <div
             key={book.id}
             className="bg-white rounded-lg shadow-md p-4 mb-4 cursor-pointer hover:bg-gray-200 transition"
-            onClick={() => alert(`Book ID: ${book.id}`)} // Placeholder for click event
+            onClick={() => router.push(`/book/${book.id}`)} // Navigate to book detail page
           >
             <h2 className="text-lg font-semibold text-gray-800">{book.name}</h2>
           </div>
