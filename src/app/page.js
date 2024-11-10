@@ -5,6 +5,17 @@ import { useState, useEffect } from 'react';
 export default function Home() {
   const [bookName, setBookName] = useState('');
   const [message, setMessage] = useState('');
+  const [books, setBooks] = useState([]);
+
+  // Fetch books from books.json when the component mounts
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const response = await fetch('/api/getBooks');
+      const data = await response.json();
+      setBooks(data.books || []);
+    };
+    fetchBooks();
+  }, []);
 
   const createBook = async () => {
     if (bookName.trim()) {
@@ -20,8 +31,12 @@ export default function Home() {
       if (data.success) {
         setMessage(`Book "${bookName}" created with ID: ${data.id}`);
         setBookName('');
-        // Set a timer to clear the message after 30 seconds
-        setTimeout(() => setMessage(''), 30000);
+
+        // Add the new book to the books list
+        setBooks((prevBooks) => [...prevBooks, { id: data.id, name: bookName }]);
+        
+        // Clear the message after 20 seconds
+        setTimeout(() => setMessage(''), 20000);
       } else {
         setMessage('Error creating book.');
       }
@@ -49,6 +64,17 @@ export default function Home() {
       {message && (
         <p className="mt-4 text-green-500 text-center font-semibold">{message}</p>
       )}
+      <div className="mt-6 w-full max-w-md">
+        {books.map((book) => (
+          <div
+            key={book.id}
+            className="bg-white rounded-lg shadow-md p-4 mb-4 cursor-pointer hover:bg-gray-200 transition"
+            onClick={() => alert(`Book ID: ${book.id}`)} // Placeholder for click event
+          >
+            <h2 className="text-lg font-semibold text-gray-800">{book.name}</h2>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
