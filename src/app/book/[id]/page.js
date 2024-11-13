@@ -1,14 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function BookDetail({ params }) {
-  const { id } = params; // Get book ID from URL parameters
+  const { id } = params;
+  const [book, setBook] = useState(null);
   const [chapterName, setChapterName] = useState("");
   const [chapterContent, setChapterContent] = useState("");
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
-  // Handle save button click to save chapter
+  useEffect(() => {
+    const fetchBook = async () => {
+      const response = await fetch("/api/getBooks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      const data = await response.json();
+      if (data.success) setBook(data.book);
+    };
+    fetchBook();
+  }, [id]);
+
   const saveChapter = async () => {
     if (chapterName.trim() && chapterContent.trim()) {
       const response = await fetch("/api/saveChapter", {
@@ -17,7 +34,7 @@ export default function BookDetail({ params }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          bookId: id, // Send bookId to associate with chapter
+          bookId: id,
           name: chapterName,
           content: chapterContent,
         }),
@@ -28,7 +45,7 @@ export default function BookDetail({ params }) {
         setMessage("Chapter saved successfully!");
         setChapterName("");
         setChapterContent("");
-        setTimeout(() => setMessage(""), 20000); // Clear message after 20 seconds
+        setTimeout(() => setMessage(""), 20000);
       } else {
         setMessage("Error saving chapter.");
       }
@@ -37,13 +54,18 @@ export default function BookDetail({ params }) {
     }
   };
 
+  const handleEdit = () => {
+    router.push(`/book/${id}/edit`); // Navigate to the Edit page
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Book {id}</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          {book ? book.name : "Loading..."}
+        </h1>
         <p className="text-gray-700 mb-6">Book ID: {id}</p>
 
-        {/* Chapter Form */}
         <div className="flex flex-col space-y-4">
           <input
             type="text"
@@ -64,7 +86,17 @@ export default function BookDetail({ params }) {
           >
             Save
           </button>
-          {message && <p className="text-green-500 text-center font-semibold">{message}</p>}
+          <button
+            onClick={handleEdit}
+            className="bg-green-500 text-white px-4 py-2 rounded-md self-end hover:bg-green-600 transition"
+          >
+            Edit Chapters
+          </button>
+          {message && (
+            <p className="text-green-500 text-center font-semibold">
+              {message}
+            </p>
+          )}
         </div>
       </div>
     </div>
