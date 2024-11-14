@@ -11,12 +11,11 @@ export default function EditChapters({ params }) {
 
   useEffect(() => {
     const fetchChapters = async () => {
-      const response = await fetch("/api/getChapters", {
-        method: "POST",
+      const response = await fetch(`/api/getChapters?bookId=${id}`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ bookId: id }),
       });
       const data = await response.json();
       if (data.success) {
@@ -25,24 +24,26 @@ export default function EditChapters({ params }) {
     };
     fetchChapters();
   }, [id]);
+  
 
   const handleSave = async () => {
     if (selectedChapter) {
       const response = await fetch("/api/editChapter", {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          chapterId: selectedChapter.id,
           name: selectedChapter.name,
           content: selectedChapter.content,
         }),
       });
-
+  
       const data = await response.json();
       if (data.success) {
         alert("Chapter updated successfully!");
+  
+        // Update only the modified chapter in the state
         setChapters((prevChapters) =>
           prevChapters.map((chapter) =>
             chapter.id === selectedChapter.id
@@ -55,6 +56,7 @@ export default function EditChapters({ params }) {
       }
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">

@@ -59,41 +59,43 @@ export default function BookDetail({ params }) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-6 md:p-10 lg:p-16">
+        <h1 className="text-3xl font-semibold text-gray-900 mb-4">
           {book ? book.name : "Loading..."}
         </h1>
-        <p className="text-gray-700 mb-6">Book ID: {id}</p>
+        <p className="text-gray-600 mb-8">Book ID: {id}</p>
 
-        <div className="flex flex-col space-y-4">
+        <div className="space-y-6">
           <input
             type="text"
             value={chapterName}
             onChange={(e) => setChapterName(e.target.value)}
             placeholder="Enter chapter name"
-            className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <textarea
             value={chapterContent}
             onChange={(e) => setChapterContent(e.target.value)}
             placeholder="Enter chapter content"
-            className="border border-gray-300 rounded-md p-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-md p-3 h-48 focus:outline-none focus:ring-2 focus:ring-blue-500"
           ></textarea>
-          <button
-            onClick={saveChapter}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md self-end hover:bg-blue-600 transition"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleEdit}
-            className="bg-green-500 text-white px-4 py-2 rounded-md self-end hover:bg-green-600 transition"
-          >
-            Edit Chapters
-          </button>
+          <div className="flex justify-between space-x-4">
+            <button
+              onClick={saveChapter}
+              className="flex-1 bg-blue-500 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-600 transition"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleEdit}
+              className="flex-1 bg-green-500 text-white px-6 py-3 rounded-md font-semibold hover:bg-green-600 transition"
+            >
+              Edit Chapters
+            </button>
+          </div>
           {message && (
-            <p className="text-green-500 text-center font-semibold">
+            <p className="text-center font-semibold text-green-600 mt-4">
               {message}
             </p>
           )}
