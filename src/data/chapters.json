@@ -1,12 +1,20 @@
 [
   {
+    "id": "1",
     "bookId": "book_1731238960853",
-    "name": "Chapter 2 Eidted",
-    "content": "This is the new Chapter"
+    "name": "Chapter 1 updated",
+    "content": "Content of chapter 1"
   },
   {
+    "id": "2",
     "bookId": "book_1731238960853",
-    "name": "Chapter 2 Eidted",
-    "content": "This is the new Chapter"
+    "name": "Chapter 2 updated",
+    "content": "Content of Chapter 2 new data"
+  },
+  {
+    "id": "3",
+    "bookId": "book_1731238960853",
+    "name": "Chapter 3",
+    "content": "New Chapter 3"
   }
 ]
