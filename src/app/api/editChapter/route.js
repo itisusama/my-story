@@ -1,20 +1,40 @@
 import fs from 'fs';
 import path from 'path';
+import { NextResponse } from 'next/server';
 
 export async function PATCH(req) {
-  const { chapterId, name, content } = await req.json();
-  const filePath = path.join(process.cwd(), 'src', 'data', 'chapters.json');
-  const chaptersData = fs.readFileSync(filePath, 'utf-8');
-  const chapters = chaptersData ? JSON.parse(chaptersData) : [];
+  try {
+    const { chapterId, name, content } = await req.json();
+    const filePath = path.join(process.cwd(), 'src', 'data', 'chapters.json');
+    const chaptersData = fs.readFileSync(filePath, 'utf-8');
+    const chapters = chaptersData ? JSON.parse(chaptersData) : [];
 
-  // Update only the specific chapter
-  const updatedChapters = chapters.map((chapter) =>
-    chapter.id === chapterId
-      ? { ...chapter, name, content }
-      : chapter
-  );
+    // Find the chapter to update
+    const chapterIndex = chapters.findIndex((chapter) => chapter.id === chapterId);
 
-  fs.writeFileSync(filePath, JSON.stringify(updatedChapters, null, 2));
+    if (chapterIndex === -1) {
+      return new NextResponse(
+        JSON.stringify({ success: false, message: "Chapter not found" }),
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
-  return new Response(JSON.stringify({ success: true }));
+    // Update the chapter
+    chapters[chapterIndex].name = name;
+    chapters[chapterIndex].content = content;
+
+    // Save the updated chapters array
+    fs.writeFileSync(filePath, JSON.stringify(chapters, null, 2));
+
+    return new NextResponse(
+      JSON.stringify({ success: true, message: "Chapter updated successfully" }),
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error("Error updating chapter:", error);
+    return new NextResponse(
+      JSON.stringify({ success: false, message: "Internal Server Error" }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 }
