@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 
 export default function EditChapters({ params }) {
-  const { id } = params; // Book ID from the route
+  const { id } = use(params); // Book ID from the route
   const [chapters, setChapters] = useState([]);
   const [formState, setFormState] = useState({ name: "", content: "", id: null });
 
@@ -59,58 +59,62 @@ export default function EditChapters({ params }) {
   
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">
-          Edit Chapters for Book {id}
-        </h1>
+    <div className="min-h-screen p-4 flex flex-col lg:flex-row-reverse gap-6">
+  {/* Left Side: Form to edit a chapter */}
+  <div className="flex-1 bg-white rounded-lg p-8 shadow-md">
+    <h1 className="text-2xl font-bold mb-6">Edit Chapters for Book {id}</h1>
 
-        {/* List of chapters */}
-        <div className="space-y-4 mb-6">
-          {chapters.map((chapter) => (
-            <div
-              key={chapter.id}
-              onClick={() => handleSelectChapter(chapter)}
-              className="p-4 border rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 transition border-gray-200"
-            >
-              <h2 className="text-lg font-semibold">{chapter.name}</h2>
-            </div>
-          ))}
-        </div>
-
-        {/* Form to edit a chapter */}
-        <div className="space-y-4">
-          <input
-            type="text"
-            value={formState.name}
-            onChange={(e) =>
-              setFormState((prev) => ({
-                ...prev,
-                name: e.target.value,
-              }))
-            }
-            className="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Chapter Name"
-          />
-          <textarea
-            value={formState.content}
-            onChange={(e) =>
-              setFormState((prev) => ({
-                ...prev,
-                content: e.target.value,
-              }))
-            }
-            className="border border-gray-300 rounded-md p-2 w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Chapter Content"
-          ></textarea>
-          <button
-            onClick={handleSave}
-            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
-          >
-            Save Changes
-          </button>
-        </div>
-      </div>
+    {/* Form to edit a chapter */}
+    <div className="space-y-4">
+      <input
+        type="text"
+        value={formState.name}
+        onChange={(e) =>
+          setFormState((prev) => ({
+            ...prev,
+            name: e.target.value,
+          }))
+        }
+        className="border rounded-md p-2 w-full"
+        placeholder="Chapter Name"
+      />
+      <textarea
+        value={formState.content}
+        onChange={(e) =>
+          setFormState((prev) => ({
+            ...prev,
+            content: e.target.value,
+          }))
+        }
+        className="border rounded-md p-2 w-full h-32"
+        placeholder="Chapter Content"
+      ></textarea>
+      <button
+        onClick={handleSave}
+        className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"
+      >
+        Save Changes
+      </button>
     </div>
+  </div>
+
+  {/* Right Side: List of chapters */}
+  <div className="w-full lg:w-1/3 bg-gray-100 rounded-lg p-6 shadow-md">
+    <h2 className="text-xl font-bold mb-4">Chapters</h2>
+
+    {/* List of chapters */}
+    <div className="space-y-4">
+      {chapters.map((chapter) => (
+        <div
+          key={chapter.id}
+          onClick={() => handleSelectChapter(chapter)}
+          className="p-4 border rounded-md cursor-pointer hover:bg-gray-200 transition"
+        >
+          <h3 className="text-lg font-semibold">{chapter.name}</h3>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
   );
 }
