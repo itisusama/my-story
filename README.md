@@ -28,4 +28,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your preferred browser.
 
-If there's anything more you'd like to add or modify, feel free to let me know!
+[Live Preview ](https://my-story-sandy.vercel.app/)
+
+Please let me know if there's anything more you'd like to add or modify!
